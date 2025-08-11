@@ -1,0 +1,12 @@
+#排除特定文件
+experiment_make.py
+*.csv
+*.log
+*.h5
+*.zip
+*.tar.gz
+# 排除特定文件夹
+./data/
+./logs/**/*
+./549logs/**/*
+./563logs/**/*

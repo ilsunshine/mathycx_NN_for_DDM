@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/act_fun.py" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/data/low_frequency_interatation/problem_data/migration_report.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/data/low_frequency_interatation/processing_errors.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/测试输出文件输出与数据写入/20250417_215141/config.yaml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/测试输出文件输出与数据写入/20250417_220902/config.yaml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/测试输出文件输出与数据写入/training.batch_size=1024model.output_dim=10/config.yaml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/output_20250417_230700.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/write_data.py" charset="GBK" />
+    <file url="PROJECT" charset="GBK" />
+  </component>
+</project>

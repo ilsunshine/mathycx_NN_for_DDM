@@ -1,0 +1,106 @@
+data:
+  root_dir: ./data/low_frequency_interatation/
+  train_dir: ./data/low_frequency_interatation/train_data
+  test_dir: ./data/low_frequency_interatation/test_data
+  global_data_keys:
+  - H
+  - h
+  - tho
+  - kappa
+  - sigma
+  - overlap
+  subdomain_data_keys:
+  - number_of_eigval_in_found
+  - blk_size
+  - m_l
+  - size_of_weight_function
+  - weight_function_grid
+  - x_max
+  - x_min
+  - y_min
+  - y_max
+  batch_size: 1024
+model:
+  output_dim: 20
+  optim: Adam
+  lr: 0.001
+  scheduler: MultiStepLR
+  k_list: 10
+  if_save_model: false
+  save_path: ./logs
+scheduler:
+  MultiStepLR:
+    milestones:
+    - 10
+    - 20
+    gamma: 0.5
+network:
+  d_model: 32
+query_network:
+  network: MLP
+  MLP:
+    input_dim: 2
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+geometrial_network:
+  network: MLP
+  keys:
+  - H
+  - h
+  - overlap
+  - m_l
+  - x_max
+  - x_min
+  - y_min
+  - y_max
+  MLP:
+    output_dim: 32
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+preditor_network:
+  network: MLP
+  MLP:
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+physics_network:
+  network: MLP
+  keys:
+  - kappa
+  - sigma
+  MLP:
+    output_dim: 32
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+attention_network:
+  network: MultiheadAttention
+  MultiheadAttention:
+    num_heads: 1
+    batch_first: true
+weight_network:
+  network: AdaptiveCNN
+  keys:
+  - weight_function_grid
+  AdaptivePoolEncoder:
+    feature_dim: 16
+    output_dim: 64
+  AdaptiveCNN:
+    input_channels: 1
+    output_dim: 64
+training:
+  epochs: 40
+  batch_size: 1024
+Experimental_args:
+- model.lr
+Experimental_purpose: 测试网络结构的通畅性与加入区域的几何节点信息后学习率对网络训练稳定度的影响
+logging:
+  log_dir: ./logs
+  level: INFO
+config: ./configs/base_with_cnn.yaml

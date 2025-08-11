@@ -1,0 +1,11 @@
+已隔离的问题文件：
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data520.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data826.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data70.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data716.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data148.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data810.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data991.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data82.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data698.h5
+D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data424.h5

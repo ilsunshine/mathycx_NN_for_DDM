@@ -1,0 +1,254 @@
+data:
+  root_dir: ./data/low_frequency_interatation/
+  train_dir: ./data/low_frequency_interatation/train_data
+  test_dir: ./data/low_frequency_interatation/test_data
+  global_data_keys:
+  - H
+  - h
+  - tho
+  - kappa
+  - sigma
+  - overlap
+  - kappah
+  - kappaH
+  - sigmah
+  - sigmaH
+  subdomain_data_keys:
+  - number_of_eigval_in_found
+  - blk_size
+  - m_l
+  - size_of_weight_function
+  - weight_function_grid
+  - x_max
+  - x_min
+  - y_min
+  - y_max
+  - x_length
+  - y_length
+  - center_x
+  - center_y
+  batch_size: 128
+  if_big_data: true
+model:
+  prediction: continue
+  output_dim: 20
+  feature_out_dim: 25
+  optim: Adam
+  lr: 0.0001
+  scheduler: MultiStepLR
+  loss: MSE_Loss
+  k_list: 20
+  if_save_model: false
+  save_path: ./logs
+  tho_generator: Tho_generator_uniform_xiugai
+  model_network: Step_function_network
+scheduler:
+  MultiStepLR:
+    milestones:
+    - 10
+    - 20
+    gamma: 0.5
+loss:
+  cross_entropy_loss:
+    label_smoothing: 0.2
+    if_update_weights: true
+  cross_entropy_loss_with_mse:
+    label_smoothing: 0.2
+    alpha: 10.0
+    if_update_weights: true
+query_network:
+  network: MLP
+  MLP:
+    input_dim: 2
+    layer_number: 3
+    layer_size:
+    - 32
+    - 64
+    - 128
+subdomain_network:
+  network: MLP
+  keys:
+  - H
+  - h
+  - overlap
+  - kappa
+  - sigma
+  - overlap
+  - kappah
+  - kappaH
+  - sigmah
+  - sigmaH
+  - m_l
+  - x_max
+  - x_min
+  - y_min
+  - y_max
+  - x_length
+  - y_length
+  - center_x
+  - center_y
+  MLP:
+    output_dim: 32
+    layer_number: 3
+    layer_size:
+    - 32
+    - 64
+    - 128
+omega_network:
+  network: MLP
+  keys:
+  - H
+  - h
+  - overlap
+  - kappa
+  - sigma
+  - overlap
+  - kappah
+  - kappaH
+  - sigmah
+  - sigmaH
+  - m_l
+  - x_max
+  - x_min
+  - y_min
+  - y_max
+  - x_length
+  - y_length
+  - center_x
+  - center_y
+  MLP:
+    output_dim: 32
+    layer_number: 3
+    layer_size:
+    - 32
+    - 64
+    - 128
+preditor_network:
+  network: CustomNet
+  initial_c: 0.2
+  update_c: 0.5
+  min_c: 0.003125
+feature_output__network:
+  network: MLP
+  MLP:
+    layer_number: 2
+    layer_size:
+    - 32
+    - 32
+    act_fun: sigmoid
+weight_network:
+  network: AdaptiveCNN
+  keys:
+  - weight_function_grid
+  AdaptivePoolEncoder:
+    feature_dim: 16
+    output_dim: 64
+  AdaptiveCNN:
+    input_channels: 1
+    output_dim: 64
+    initial_cnn_arg:
+      layer_number: 4
+      kernel_size:
+      - 3
+      - 3
+      - 3
+      - 3
+      channel_size:
+      - 8
+      - 16
+      - 32
+      - 64
+      padding_size:
+      - 1
+      - 1
+      - 1
+      - 1
+      if_use_batchNorm:
+      - true
+      - true
+      - true
+      - true
+      act_fun: relu
+      if_pooling:
+      - true
+      - true
+      - false
+      - false
+      pooling_model: max
+      pooling_size:
+      - 2
+      - 2
+      - 2
+      - 2
+    final_cnn_arg:
+      layer_number: 3
+      kernel_size:
+      - 3
+      - 3
+      - 3
+      channel_size:
+      - 32
+      - 64
+      - 64
+      padding_size:
+      - 1
+      - 1
+      - 1
+      - 1
+      if_use_batchNorm:
+      - true
+      - true
+      - true
+      act_fun: relu
+      if_pooling:
+      - true
+      - true
+      - false
+      pooling_model: max
+      pooling_size:
+      - 2
+      - 2
+      - 2
+    adaptive_layer_arg:
+      kernel_size:
+      - 3
+      channel_size:
+      - 128
+      padding_size:
+      - 1
+      if_use_batchNorm:
+      - true
+      act_fun: relu
+    global_pool_size: 20
+tho_generator:
+  Tho_generator_uniform_xiugai:
+    beta: -0.4
+    low_rate: 0.75
+    up_rate: 2.0
+    mean_rate: 0.25
+  Tho_generator_network:
+    network: MLP
+    model_pth: ./tho_generator_model_pth/20250513_123300model_best_kl.pth
+    MLP:
+      input_dim: 32
+      output_dim: 1
+      layer_number: 4
+      layer_size:
+      - 32
+      - 64
+      - 128
+      - 32
+      act_fun: sigmoid
+      pow_k: 1
+training:
+  epochs: 11
+  batch_size: 128
+Experimental_args:
+- data.train_dir
+Experimental_purpose: 测试网络结构的通畅性
+logging:
+  log_dir: ./logs
+  level: INFO
+model_pth: None
+model_config: None
+model_modify_config: None

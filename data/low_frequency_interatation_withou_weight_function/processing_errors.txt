@@ -1,0 +1,11 @@
+故障文件记录：
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data148 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data148\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data424 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data424\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data520 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data520\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data698 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data698\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data70 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data70\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data716 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data716\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data810 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data810\GlobalData.h5
+[无效文件] D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data82\subdomain_14_0.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data826 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data826\GlobalData.h5
+[严重错误] 处理目录 D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data991 失败: 损坏的GlobalData文件: D:\pycharm_project\NN_for_DDM\data\low_frequency\low_frequency\data991\GlobalData.h5

@@ -1,0 +1,92 @@
+attention_network:
+  MultiheadAttention:
+    batch_first: true
+    num_heads: 1
+  network: MultiheadAttention
+config: ./configs/base.yaml
+data:
+  batch_size: 1024
+  global_data_keys:
+  - H
+  - h
+  - tho
+  - kappa
+  - sigma
+  - overlap
+  root_dir: ./data/low_frequency_interatation/
+  subdomain_data_keys:
+  - number_of_eigval_in_found
+  - blk_size
+  - m_l
+  - size_of_weight_function
+  - weight_function
+  test_dir: ./data/low_frequency_interatation/test_data
+  train_dir: ./data/low_frequency_interatation/train_data
+geometrial_network:
+  MLP:
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+    output_dim: 32
+  keys:
+  - H
+  - h
+  - overlap
+  - m_l
+  network: MLP
+logging:
+  level: INFO
+  log_dir: "./logs/\u6807\u51C6\u8F93\u51FA"
+model:
+  if_save_model: false
+  k_list: 5
+  lr: 0.001
+  optim: Adam
+  output_dim: 20
+  save_path: ./logs
+  scheduler: MultiStepLR
+network:
+  d_model: 32
+physics_network:
+  MLP:
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+    output_dim: 32
+  keys:
+  - kappa
+  - sigma
+  network: MLP
+preditor_network:
+  MLP:
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+  network: MLP
+query_network:
+  MLP:
+    input_dim: 2
+    layer_number: 2
+    layer_size:
+    - 16
+    - 16
+  network: MLP
+scheduler:
+  MultiStepLR:
+    gamma: 0.5
+    milestones:
+    - 10
+    - 20
+training:
+  batch_size: 1024
+  epochs: 60
+weight_network:
+  AdaptivePoolEncoder:
+    feature_dim: 8
+    output_dim: 32
+  keys:
+  - weight_function
+  network: AdaptivePoolEncoder

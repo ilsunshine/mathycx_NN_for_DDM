@@ -1,0 +1,197 @@
+# -*- coding: utf-8 -*-
+# 基础参数配置
+
+data:
+  root_dir: "./data/low_frequency_interatation/"
+  train_dir: "./data/low_frequency_interatation/train_data"
+  test_dir: "./data/low_frequency_interatation/test_data"
+  global_data_keys: [ 'H', 'h', 'tho', 'kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH' ]
+  subdomain_data_keys: [ 'number_of_eigval_in_found', 'blk_size',
+                         'm_l', 'size_of_weight_function',"weight_function_grid","x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y" ]
+  batch_size: 1024
+  if_big_data: false  #数据量小的时候将所有数据一次性加载到device中，速度更快，数据量大的时候只进行批次的逐步加载
+
+
+#model:
+#  #prediction: "continue"
+#  #output_dim: 1
+#  prediction: "discrete"
+#  output_dim: 20
+#  optim: "Adam"
+#  lr:  0.0001 #经过初步测试在0.0001/0.0005效果较好，可能较小的学习率更能适合
+#  #lr: 1000000.0
+#  scheduler: "MultiStepLR"
+#  loss: "MSE_Loss"
+#  #loss: "cross_entropy_loss_with_mse"
+#  k_list: 20
+#  if_save_model: false
+#  save_path: "./logs"
+#  #tho_generator: "Tho_generator_network"
+#  tho_generator: "Tho_generator_uniform_xiugai"
+#scheduler:
+#  MultiStepLR:
+#    milestones: [10, 20]
+#    gamma: 0.5
+model:
+  #prediction: "discrete"
+  prediction: "continue"
+  output_dim: 20
+  feature_out_dim: 25
+  optim: "Adam"
+  lr:  0.0001 #经过初步测试在0.0001/0.0005效果较好，可能较小的学习率更能适合
+  scheduler: "MultiStepLR"
+  #loss: "cross_entropy_loss"
+  #loss: "cross_entropy_loss_with_mse"
+  loss: "MSE_Loss"
+  k_list: 20
+  if_save_model: false
+  save_path: "./logs"
+  tho_generator: "Tho_generator_uniform_xiugai"
+  test_tho_generator: "Tho_generator_uniform_xiugai"
+  #tho_generator: "Tho_generator_network"
+  #tho_generator: "Tho_generator_uniform_0_1"
+
+  model_network: "Step_function_network"
+  #model_network: "Step_function_network_with_omegann"
+scheduler:
+  MultiStepLR:
+    milestones: [10, 20]
+    gamma: 0.5
+loss:
+  cross_entropy_loss:
+    label_smoothing: 0.2 #经初步测试0.2在平均的训练测试准确版以及测试集上的最优准确度都有较优的表现，这里0.1是为了在实验\测试preditor网络架构的影响保持参数一致性
+    if_update_weights: true
+  cross_entropy_loss_with_mse:
+    label_smoothing: 0.2 #经过初步测试0.2,10.0，false是较好的参数，特别是if_update_weights开启时无法进行优化与训练因此必须关闭
+    #alpha: 10.0
+    alpha: 10.0 #2025.6.11临时测试用
+    if_update_weights: true
+#network:
+#  d_model: 32
+query_network:
+  network: "MLP"
+  MLP:
+    #output_dim: {{"network.d_model"}}
+    input_dim: 2
+    layer_number: 3
+    layer_size: [32,64, 128]
+subdomain_network:
+  network: "MLP"
+  keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
+  MLP:
+    output_dim: 32
+    layer_number: 3
+    layer_size: [32,64,128]
+omega_network:
+  network: "MLP"
+  keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
+  MLP:
+    output_dim: 32
+    layer_number: 3
+    layer_size: [32,64,128]
+preditor_network:
+  network: "CustomNet"  #与"Step_function_network"匹配的预测网络
+  #keys: ["kappa", "sigma"]
+#  initial_c: 1.0
+#  update_c: 2.0
+  initial_c: 0.2 #初步测试逐步减小到1/256时有较好的训练效果，设置update_c=1.0作为不更新参数的空白对照
+  update_c: 0.5  #c=c*update_c 0.5可能还是太大了，对
+  min_c: 0.003125 #经过测试，过小的c可能会导致优化不稳定，无法达到局部最优，这里需要设置最小的阈值，当小于这个阈值时不在进行更新，0.003125为测试时最优损失时的c阈值
+#  CustomNet:
+#
+#  CustomNet_with_omiga:
+#    initial_c: 1.0
+#    update_c: 2.0
+
+#physics_network:
+#  network: "MLP"
+#  keys: ["kappa", "sigma",'H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH']
+#  MLP:
+#    output_dim: 32
+#    layer_number: 3
+#    #layer_size: [16,16]
+#    layer_size: [32,64,128] #原有的代码错误的将physics_network的layer_size读取为了preditor_network的layer_size，这里为了保证后面实验的一致性，扩大为 64 ,64与发现错误时的读取一致， 2025.4.27
+#attention_network:
+#  network: "MultiheadAttention"
+#  MultiheadAttention:
+#    num_heads: 4
+#    batch_first: True
+
+feature_output__network:
+  network: "MLP"
+  #keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
+  MLP:
+    layer_number: 2
+    layer_size: [32,32]
+    act_fun: sigmoid
+weight_network:
+  network: "AdaptiveCNN"
+  keys: ["weight_function_grid"]
+  AdaptivePoolEncoder:
+    #经过初步测试16-64是较好的参数组合
+    feature_dim: 16
+    output_dim: 64
+  AdaptiveCNN:
+    input_channels: 1
+    output_dim: 64
+    initial_cnn_arg:
+      #layer_number: 4
+      layer_number: 2  #经过测试
+      kernel_size: [3,3,3,3]
+      #channel_size: [16,32,64,128]
+      channel_size: [8, 16, 32, 64] #经过初步测试减小的cnn反而有较好的测试效果
+      padding_size: [1,1,1,1]
+      if_use_batchNorm: [true,true,true,true]
+      act_fun: "relu"
+      if_pooling: [true,true,false,false] #考虑到有的权重文件的图像较小无法支持过多的pooling
+      pooling_model: "max"
+      pooling_size: [2,2,2,2]
+    final_cnn_arg:
+      layer_number: 3
+      kernel_size: [ 3,3,3 ]
+      #channel_size: [16,32,64,128]
+      channel_size: [32,64,64 ]
+      padding_size: [ 1,1,1,1 ]
+      if_use_batchNorm: [ true,true,true ]
+      act_fun: "relu"
+      if_pooling: [ true,true,false]
+      pooling_model: "max"
+      pooling_size: [ 2,2,2]
+    adaptive_layer_arg:
+      kernel_size: [3]
+      channel_size: [128]
+      padding_size: [1]
+      if_use_batchNorm: [true]
+      act_fun: "relu"
+    global_pool_size: 20
+tho_generator:
+  Tho_generator_uniform_xiugai:
+    beta: -0.4
+    low_rate: 0.75
+    up_rate: 2.0
+#    low_rate: 1.0  #测试反向传播是否有效
+#    up_rate: 1.0
+    mean_rate: 0.25
+  Tho_generator_network:
+    network: "MLP"
+    model_pth: "./tho_generator_model_pth/20250513_123300model_best_kl.pth"
+    MLP:
+      input_dim: 32
+      output_dim: 1
+      layer_number: 4
+      layer_size: [ 32,64,128,32 ]
+      act_fun: "sigmoid"
+      pow_k: 1
+training:
+  epochs: 11
+  batch_size: 1024
+
+#Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
+#                    "weight_network.AdaptiveCNN.initial_cnn_arg.padding_size","weight_network.AdaptiveCNN.initial_cnn_arg.if_use_batchNorm","weight_network.AdaptiveCNN.initial_cnn_arg.act_fun","weight_network.AdaptiveCNN.initial_cnn_arg.if_pooling",
+#                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
+Experimental_args: ["data.train_dir"]
+Experimental_purpose: "测试网络结构的通畅性"
+#Experimental_purpose: "测试网络的通畅性"
+logging:
+  log_dir: "./logs"
+  level: "INFO"

@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+# 基础参数配置
+
+
+tho_generator:
+  Tho_generator_uniform_xiugai:
+    beta: -0.4
+    low_rate: 0.5
+    up_rate: 4.0
+    mean_rate: 0.75

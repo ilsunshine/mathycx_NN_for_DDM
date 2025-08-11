@@ -1,0 +1,30 @@
+#设置数据，部分数据随机生成：
+frequence_inf=1
+frequence_sup=15
+frequence =random.randint(frequence_inf,frequence_sup)
+# frequence=40
+
+kappa=frequence*math.pi
+# beta_inf=0.5
+# beta_sup=0.6
+# beta=random.uniform(beta_inf,beta_sup)
+beta=0.6
+size=1.0
+order=1
+h_k_order=-1-1/(2*order)
+# print("kappa:",kappa)
+#h_k_order=-1.5
+# print("h^order",h_k_order)
+# print(size/kappa)
+h=(size/kappa)**(-h_k_order)
+# print("h:",h)
+npart=find_min_m(s=size,v=h)
+H=(size/kappa)**(beta)
+# print("H:",H)
+Npart=find_min_m(s=size,v=H)
+#Noverlap=random.randint(1,3)
+Noverlap=1
+# shift_inf=0.1
+# shift_sup=2.0
+# shift=random.uniform(shift_inf,shift_sup)
+shift=1.0

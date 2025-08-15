@@ -2,14 +2,14 @@
 # 基础参数配置
 
 data:
-  root_dir: "./data/low_frequency_interatation/"
-  train_dir: "./data/low_frequency_interatation/train_data"
-  test_dir: "./data/low_frequency_interatation/test_data"
+  root_dir: "./data/low_frequency_k_with_cluster_interatation/"
+  train_dir: "./data/low_frequency_k_with_cluster_interatation/train_data"
+  test_dir: "./data/low_frequency_k_with_cluster_interatation/test_data"
   global_data_keys: [ 'H', 'h', 'tho', 'kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH' ]
   subdomain_data_keys: [ 'number_of_eigval_in_found', 'blk_size',
                          'm_l', 'size_of_weight_function',"weight_function_grid","x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y" ]
-  batch_size: 128
-  if_big_data: true  #数据量小的时候将所有数据一次性加载到device中，速度更快，数据量大的时候只进行批次的逐步加载
+  batch_size: 256
+  if_big_data: false #数据量小的时候将所有数据一次性加载到device中，速度更快，数据量大的时候只进行批次的逐步加载
 
 
 #model:
@@ -50,9 +50,11 @@ model:
   #tho_generator: "Tho_generator_network"
   #tho_generator: "Tho_generator_uniform_0_1"
   test_tho_generator: "Tho_generator_uniform_xiugai"
-  #model_network: "Step_function_network"
-  model_network: "Step_function_network_with_omegann"
-  test_epoch: 1 #每隔多少轮进行一次测试
+  model_network: "Step_function_network"
+  if_train_independ: false #Step_function_network_with_omegann是否启用交替训练
+  alternating_epoch: 5 #Step_function_network_with_omegann是否启用交替训练的交替轮次
+  #model_network: "Step_function_network_with_omegann"
+  test_epoch: 10 #每隔多少轮进行一次测试
 scheduler:
   MultiStepLR:
     milestones: [10, 20]
@@ -182,13 +184,13 @@ tho_generator:
       act_fun: "sigmoid"
       pow_k: 1
 training:
-  epochs: 80
+  epochs: 60
   batch_size: 128
 
 #Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.padding_size","weight_network.AdaptiveCNN.initial_cnn_arg.if_use_batchNorm","weight_network.AdaptiveCNN.initial_cnn_arg.act_fun","weight_network.AdaptiveCNN.initial_cnn_arg.if_pooling",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
-Experimental_args: ["model.if_save_model","model.k_list"]
+Experimental_args: ["preditor_network.update_c","model.feature_out_dim"]
 #Experimental_purpose: "测试新数据集"
 Experimental_purpose: "测试网络的通畅性"
 logging:

@@ -145,6 +145,11 @@ class evigal_number_model_for_eigvalue:
         path_dir = os.path.dirname(model_pth_dir)
         print("训练的设备为: ", self.device)
         for epoch in range(epochs):
+            try:
+                self.network.alternating_train(epochs=epoch)
+            except AttributeError:
+                if epoch == 0:
+                    print("alternating_train函数不存在")
             self.epoch=epoch
             loss_every_epoch = 0.0
             start_time_each_epoch = time.time()
@@ -740,8 +745,10 @@ if __name__ == "__main__":
                                     'layer_size'],act_fun="leakyrelu")#后面需要将权重进行初始化，为了避免梯度消失，不使用relu
         init_last_linear_zero_weight_bias_one(model=omega_network)#将omega_network最后一层权重初始化为0偏置初始化为1，初始输出为1,经过softmax后得到最终初始\omega输出为-1/feature_dim
         preditor_network=CustomNet_with_omiga(feature_dim=model_information["feature_out_dim"],initial_c=preditor_network_information["initial_c"],update_c=preditor_network_information["update_c"],min_c=preditor_network_information["min_c"])
+        if_train_independ=model_information["if_train_independ"]  # Step_function_network_with_omegann是否启用交替训练
+        alternating_epoch=model_information["alternating_epoch"]  # Step_function_network_with_omegann
         model=Step_function_network_with_omegann(input_dim=input_dim,output_dim=output_dim,weight_function_network=weight_network,omega_network=omega_network,omega_information_keys=omega_network_information_keys
-                                            ,feature_out_network=feature_out_network,predictor_network=preditor_network,weihgt_function_keys=['weight_function_grid'],subdomain_information_keys=subdomain_information_keys,subdomain_information_network=subdomain_network)
+                                            ,feature_out_network=feature_out_network,predictor_network=preditor_network,weihgt_function_keys=['weight_function_grid'],subdomain_information_keys=subdomain_information_keys,subdomain_information_network=subdomain_network,if_train_independ=if_train_independ,alternating_epoch=alternating_epoch)
     if args.model_pth != "None":
         model.load_state_dict(torch.load(args.model_pth))
         print(f"加载路劲{args.model_pth}的权重成功")

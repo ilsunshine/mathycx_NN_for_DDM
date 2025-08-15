@@ -6,7 +6,7 @@ experiment_make.py
 *.zip
 *.tar.gz
 # 排除特定文件夹
-./data/
-./logs/**/*
-./549logs/**/*
-./563logs/**/*
+/data/
+/logs/**/*
+/549logs/**/*
+/563logs/**/*

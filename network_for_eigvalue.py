@@ -193,9 +193,28 @@ class Step_function_network(nn.Module):#用sigmoid拟合阶梯函数的网络
         except AttributeError:
             print("网络更新异常")
 
+    def alternating_train(self, epochs):#暂时用于站位与Step_function_network_with_omegann一致
+        pass
+
 class Step_function_network_with_omegann(nn.Module):#用sigmoid拟合阶梯函数的网络,相比与Step_function_network，权重Omegia由一个网络作为输出产生
     def __init__(self,input_dim,output_dim,weight_function_network,subdomain_information_network,predictor_network,feature_out_network,omega_network,device=None,
-                 weihgt_function_keys=['weight_function_grid'],subdomain_information_keys=['H','h','m_l'],omega_information_keys=['H','h','m_l']):
+                 weihgt_function_keys=['weight_function_grid'],subdomain_information_keys=['H','h','m_l'],omega_information_keys=['H','h','m_l'],if_train_independ=False,alternating_epoch=-1):
+        """
+
+        :param input_dim: 输入维度
+        :param output_dim: 输出维度
+        :param weight_function_network:处理权重信息的网络
+        :param subdomain_information_network: 处理子区域信息的网络
+        :param predictor_network: 用于做最后预测的网络
+        :param feature_out_network:将子区域信息特征与权重信息特征用于得到
+        :param omega_network:
+        :param device:运行设备
+        :param weihgt_function_keys:权重信息的键的列表
+        :param subdomain_information_keys:子区域信息的键的列表
+        :param omega_information_keys:\omega网络输入信息的键的列表
+        :param if_train_independ:是否采用交替单独训练omega_network的策略(训练omega_network参数时其余网络参数冻结，反之omega_network参数冻结，交替进行)
+        :param alternating_epoch:交替轮次
+        """
 
 
         super(Step_function_network_with_omegann, self).__init__()
@@ -221,6 +240,9 @@ class Step_function_network_with_omegann(nn.Module):#用sigmoid拟合阶梯函�
         self.subdomain_information_keys=subdomain_information_keys
         self.omega_network=omega_network
         self.omega_information_keys = omega_information_keys
+        self.alternating_epoch=alternating_epoch
+        self.if_train_independ=if_train_independ
+
     def forward(self, subdomain_data,global_data,tho_batch):
         weight_function=subdomain_data[self.weight_function_keys[0]]# (batch_size, H, W)
         weight_function=weight_function.unsqueeze(1)# 增加chennel维度(batch_size,1, H, W)
@@ -310,8 +332,28 @@ class Step_function_network_with_omegann(nn.Module):#用sigmoid拟合阶梯函�
         except AttributeError:
             print("网络更新异常")
 
-
-
+    def alternating_train(self,epochs):
+        if self.if_train_independ==True:
+            pass
+        else:
+            if epochs%self.alternating_epoch!=0:
+                pass
+            elif int(epochs/self.alternating_epoch)%2==0:#冻结omega_network的权重
+                omega_network_unfreeze=False
+                other_network_unfreeze=True
+                set_network_trainable(self.omega_network,unfreeze=omega_network_unfreeze)
+                set_network_trainable(self.predictor_network,unfreeze=other_network_unfreeze)
+                set_network_trainable(self.weight_function_network,unfreeze=other_network_unfreeze)
+                set_network_trainable(self.feature_out_network,unfreeze=other_network_unfreeze)
+                set_network_trainable(self.subdomain_information_network,unfreeze=other_network_unfreeze)
+            elif int(epochs/self.alternating_epoch)%2==1:
+                omega_network_unfreeze=True
+                other_network_unfreeze=False
+                set_network_trainable(self.omega_network,unfreeze=omega_network_unfreeze)
+                set_network_trainable(self.predictor_network,unfreeze=other_network_unfreeze)
+                set_network_trainable(self.weight_function_network,unfreeze=other_network_unfreeze)
+                set_network_trainable(self.feature_out_network,unfreeze=other_network_unfreeze)
+                set_network_trainable(self.subdomain_information_network,unfreeze=other_network_unfreeze)
 
 if __name__=="__main__":
 

@@ -144,6 +144,10 @@ class evigal_number_model_for_eigvalue:
         self.network.train()
         path_dir = os.path.dirname(model_pth_dir)
         print("训练的设备为: ", self.device)
+        self.best_train_max_L2_relative_error=np.inf
+        self.best_train_max_L2_relative_error_epoch=-1
+        self.best_train_mean_L2_relative_error = np.inf
+        self.best_train_mean_L2_relative_error_epoch=-1
         for epoch in range(epochs):
             try:
                 self.network.alternating_train(epochs=epoch)
@@ -298,6 +302,12 @@ class evigal_number_model_for_eigvalue:
 
                 print(
                     f"训练集上 最大相对L2误差为{train_max_raletiver_L2_error},平均L2相对误差为{train_mean_raletive_L2_error}")
+                self.best_train_max_L2_relative_error_epoch=self.best_train_max_L2_relative_error_epoch if train_max_raletiver_L2_error>self.best_train_max_L2_relative_error else epoch
+                self.best_train_max_L2_relative_error=self.best_train_max_L2_relative_error if train_max_raletiver_L2_error>self.best_train_max_L2_relative_error else train_max_raletiver_L2_error
+                self.best_train_mean_L2_relative_error_epoch = self.best_train_mean_L2_relative_error_epoch if train_mean_raletive_L2_error > self.best_train_mean_L2_relative_error else epoch
+                self.best_train_mean_L2_relative_error = self.best_train_mean_L2_relative_error if train_mean_raletive_L2_error > self.best_train_mean_L2_relative_error else train_mean_raletive_L2_error
+
+
                 self.network.train()
                 try:
                     if epoch>0:
@@ -841,11 +851,12 @@ if __name__ == "__main__":
                 data_item = data_item[keys[i + 1]]
             data.append(data_item)
         heads += ['配置文件保存路劲', '总共训练轮次', '最优训练损失轮次', '最优训练损失', '最优训练准确度轮次',
-                  '最优训练准确度', '在测试集上的最优测试准确度', "最优平均召回率", "最优平均准确度", "最优mAP"]
+                  '最优训练准确度', '在测试集上的最优测试准确度', "最优平均召回率", "最优平均准确度", "最优mAP","训练最优平均L2相对误差","训练最优平均L2相对误差轮次","训练最优最大L2相对误差","训练最优最大L2相对误差轮次"]
         data += [log_dir, final_config["training"]['epochs'], test_model.best_train_loss_epoch,
                  test_model.best_train_loss, test_model.best_train_acc_epoch,
                  test_model.best_train_acc, test_model.best_test_acc, test_model.best_train_recall,
-                 test_model.best_train_precision, test_model.best_train_map]
+                 test_model.best_train_precision, test_model.best_train_map,test_model.best_train_mean_L2_relative_error,test_model.best_train_mean_L2_relative_error_epoch,
+                 test_model.best_train_max_L2_relative_error,test_model.best_train_max_L2_relative_error_epoch]
         record_data(experiment_path, headers=heads, data=data)
         record_data(args_path, headers=heads, data=data)  # 记录同样参数下训练用于求平均，避免随机性带来的误差
 

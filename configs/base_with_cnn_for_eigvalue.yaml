@@ -2,9 +2,9 @@
 # 基础参数配置
 
 data:
-  root_dir: "./data/low_frequency_k_with_cluster_interatation/"
-  train_dir: "./data/low_frequency_k_with_cluster_interatation/train_data"
-  test_dir: "./data/low_frequency_k_with_cluster_interatation/test_data"
+  root_dir: "./data/low_frequency_interatation/"
+  train_dir: "./data/low_frequency_interatation/train_data"
+  test_dir: "./data/low_frequency_interatation/test_data"
   global_data_keys: [ 'H', 'h', 'tho', 'kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH' ]
   subdomain_data_keys: [ 'number_of_eigval_in_found', 'blk_size',
                          'm_l', 'size_of_weight_function',"weight_function_grid","x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y" ]
@@ -190,7 +190,7 @@ training:
 #Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.padding_size","weight_network.AdaptiveCNN.initial_cnn_arg.if_use_batchNorm","weight_network.AdaptiveCNN.initial_cnn_arg.act_fun","weight_network.AdaptiveCNN.initial_cnn_arg.if_pooling",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
-Experimental_args: ["preditor_network.update_c","model.feature_out_dim"]
+Experimental_args: ["model.model_network","model.if_train_independ"]
 #Experimental_purpose: "测试新数据集"
 Experimental_purpose: "测试网络的通畅性"
 logging:

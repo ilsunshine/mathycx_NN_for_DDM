@@ -1,28 +1,90 @@
-labels = hdf5dataset.get_labels(subdomain_name, tho_batch).to(self.device)
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
-# print("测试节点： labels:",labels)
-# print("测试节点 labels的形状为",labels.shape)
-outputs = self.network(subdomain_data, global_dataset, tho_batch)
-# print("test point outputs is",outputs)
-if self.prediction_model == "discrete":
-    labels = get_discrete_labels(labels=labels, ml=subdomain_data['m_l'],
-                                 feature_dim=self.output_dim).to(self.device)
-    # test_metris.update(outputs, labels)
-elif self.prediction_model == "continue":
-    # print("测试节点 除以m_l前的labels' shape is ",labels.shape)
-    # print("测试节点 除以m_l前的labels' values is ",labels)
-    # print("测试节点 m_l's shape is ",subdomain_data['m_l'].shape)
-    # print("测试节点 m_l's values is ",subdomain_data['m_l'])
-    dis_labels = get_discrete_labels(labels=labels, ml=subdomain_data['m_l'],
-                                     feature_dim=self.output_dim).to(self.device)
-    labels = labels / (subdomain_data['m_l'].unsqueeze(-1))
-    with torch.no_grad():
-        # dis_outputs=outputs*(subdomain_data['m_l'].unsqueeze(-1))
-        # print("-------------正确性测试 此时dis_outputs=labes,如若程序正确无误应当具有高准确性-----------")
-        # dis_outputs = labels * (subdomain_data['m_l'].unsqueeze(-1))
-        dis_outputs = get_discrete_labels_one_hot(labels=outputs, ml=subdomain_data['m_l'],
-                                                  feature_dim=self.output_dim).to(self.device)
-        # print("测试节点 dislabels is ",dis_labels)
-        # print("测试节点 dis_outputs is ",dis_outputs)
-        # print("测试节点 outputs is ",outputs)
-        test_metris.update(dis_outputs, dis_labels)
+
+class ResidualBlock(nn.Module):
+    def __init__(self, in_features, out_features):
+        super(ResidualBlock, self).__init__()
+        self.fc1 = nn.Linear(in_features, out_features)
+        self.bn1 = nn.BatchNorm1d(out_features)
+        self.fc2 = nn.Linear(out_features, out_features)
+        self.bn2 = nn.BatchNorm1d(out_features)
+
+        # 如果输入输出维度不一致，用downsample调整
+        self.downsample = None
+        if in_features != out_features:
+            self.downsample = nn.Sequential(
+                nn.Linear(in_features, out_features),
+                nn.BatchNorm1d(out_features)
+            )
+
+    def forward(self, x):
+        identity = x
+
+        out = self.fc1(x)
+        out = self.bn1(out)
+        out = F.relu(out)
+
+        out = self.fc2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(identity)
+
+        out += identity
+        out = F.relu(out)
+        return out
+
+
+class FCResNet_Block(nn.Module):
+    def __init__(self, input_dim, num_classes, layers=[2,2,2,2]):
+        """
+        input_dim: 输入特征维度
+        num_classes: 输出类别数
+        layers: 每层堆叠的 ResidualBlock 数量, 类似 ResNet18 的 [2,2,2,2]
+        """
+        super(FCResNet_Block, self).__init__()
+
+        # 起始投影层，统一映射到64维
+        self.fc_in = nn.Sequential(
+            nn.Linear(input_dim, 64),
+            nn.BatchNorm1d(64),
+            nn.ReLU(inplace=True)
+        )
+
+        # 残差层堆叠
+        self.layer1 = self._make_layer(64, 64, layers[0])
+        self.layer2 = self._make_layer(64, 128, layers[1])
+        self.layer3 = self._make_layer(128, 256, layers[2])
+        self.layer4 = self._make_layer(256, 512, layers[3])
+
+        # 输出层
+        self.fc_out = nn.Linear(512, num_classes)
+
+    def _make_layer(self, in_features, out_features, blocks):
+        layers = []
+        layers.append(ResidualBlock(in_features, out_features))
+        for _ in range(1, blocks):
+            layers.append(ResidualBlock(out_features, out_features))
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        out = self.fc_in(x)
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+        out = self.fc_out(out)
+        return out
+
+
+if __name__ == "__main__":
+    # 定义一个类似 ResNet18 的结构
+    model = FCResNet_Block(input_dim=100, num_classes=10, layers=[2,2,2,2])
+    print(model)
+
+    # 测试一下
+    x = torch.randn(32, 100)  # batch=32, 输入维度=100
+    y = model(x)
+    print(y.shape)  # 期望: torch.Size([32, 10])

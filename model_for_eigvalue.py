@@ -685,13 +685,21 @@ if __name__ == "__main__":
     # query_network=MLP(input_dim=1,output_dim=d_model,layer_number=2,layer_size=[16,16])
     # query_network = ThoFeatureExtractor(d_model=3 * d_model, input_dim=2)
 
-    subdomain_network = MLP(input_dim=len(subdomain_information_keys),
-                             output_dim=subdomain_network_information[subdomain_network_information["network"]][
-                                 'output_dim'],
-                             layer_number=subdomain_network_information[subdomain_network_information["network"]][
-                                 'layer_number'],
-                             layer_size=subdomain_network_information[subdomain_network_information["network"]][
-                                 'layer_size'])
+    if subdomain_network_information["network"]=="MLP":
+        subdomain_network = MLP(input_dim=len(subdomain_information_keys),
+                                output_dim=subdomain_network_information[subdomain_network_information["network"]][
+                                    'output_dim'],
+                                layer_number=subdomain_network_information[subdomain_network_information["network"]][
+                                    'layer_number'],
+                                layer_size=subdomain_network_information[subdomain_network_information["network"]][
+                                    'layer_size'])
+    elif subdomain_network_information["network"]=="FCResNet_Block":
+        subdomain_network=FCResNet_Block(input_dim=len(subdomain_information_keys),
+                                         output_dim=subdomain_network_information[subdomain_network_information["network"]][
+                                    'output_dim'],
+                                         layers=subdomain_network_information[subdomain_network_information["network"]]['layers'],
+                                         layer_size=subdomain_network_information[subdomain_network_information["network"]]['layer_size'],
+                                         if_batchnorm=subdomain_network_information[subdomain_network_information["network"]]['if_batchnorm'])
     feature_out_network_input_dim=subdomain_network_information[subdomain_network_information["network"]][
                                  'output_dim']+weihgt_network_information[weihgt_network_information["network"]]["output_dim"]
     feature_out_network=MLP(input_dim=feature_out_network_input_dim,output_dim=model_information["feature_out_dim"],layer_number=feature_out_network_information['MLP']["layer_number"],layer_size=feature_out_network_information['MLP']["layer_size"],act_fun=feature_out_network_information['MLP']["act_fun"])

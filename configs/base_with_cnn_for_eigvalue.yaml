@@ -78,12 +78,17 @@ query_network:
     layer_number: 3
     layer_size: [32,64, 128]
 subdomain_network:
-  network: "MLP"
+  network: "FCResNet_Block"
   keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
   MLP:
     output_dim: 32
     layer_number: 3
     layer_size: [32,64,128]
+  FCResNet_Block:
+    output_dim: 32
+    layers: [ 1,1,1,1]
+    layer_size: [32,64,64,128]
+    if_batchnorm: false
 omega_network:
   network: "MLP"
   keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]

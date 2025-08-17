@@ -92,6 +92,100 @@ class MLP(nn.Module):#构建MLP
         # return x
         return self.model(x)
 
+
+class ResidualBlock(nn.Module):
+    def __init__(self, in_features, out_features,if_batchnorm=True):
+        """
+        参考ResNet的Block，将CNN改成FC
+        :param in_features:
+        :param out_features:
+        :param if_batchnorm: 是否采用batch_norm技术
+        """
+        super(ResidualBlock, self).__init__()
+        self.fc1 = nn.Linear(in_features, out_features)
+
+        self.fc2 = nn.Linear(out_features, out_features)
+        self.if_batchnorm=if_batchnorm
+        if if_batchnorm:
+            self.bn1 = nn.BatchNorm1d(out_features)
+            self.bn2 = nn.BatchNorm1d(out_features)
+
+        # 如果输入输出维度不一致，用downsample调整
+        self.downsample = None
+        if in_features != out_features:
+            self.downsample = nn.Sequential(
+                nn.Linear(in_features, out_features),
+                nn.BatchNorm1d(out_features)
+            )
+
+    def forward(self, x):
+        identity = x
+
+        out = self.fc1(x)
+        if self.if_batchnorm:
+            out = self.bn1(out)
+        out = F.relu(out)
+
+        out = self.fc2(out)
+        if self.if_batchnorm:
+            out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(identity)
+
+        out += identity
+        out = F.relu(out)
+        return out
+
+
+class FCResNet_Block(nn.Module):
+    def __init__(self, input_dim, output_dim, layers=[2,2,2,2],layer_size=[64,128,256,512],if_batchnorm=True):
+        """
+        input_dim: 输入特征维度
+        num_classes: 输出类别数
+        layers: 每层堆叠的 ResidualBlock 数量, 类似 ResNet18 的 [2,2,2,2]
+        layer_size:每层layer的输出维度
+        """
+        super(FCResNet_Block, self).__init__()
+
+        # 起始投影层，统一映射到layer_size[0]
+        self.if_batchnorm=if_batchnorm
+        if self.if_batchnorm:
+            self.fc_in = nn.Sequential(
+                nn.Linear(input_dim, layer_size[0]),
+                nn.BatchNorm1d(layer_size[0]),
+                nn.ReLU(inplace=True)
+            )
+        else:
+            self.fc_in = nn.Sequential(
+                nn.Linear(input_dim, layer_size[0]),
+                nn.ReLU(inplace=True)
+            )
+
+        # 残差层堆叠
+        self.layer1 = self._make_layer(layer_size[0], layer_size[0], layers[0])
+        self.layer2 = self._make_layer(layer_size[0],layer_size[1], layers[1])
+        self.layer3 = self._make_layer(layer_size[1],layer_size[2], layers[2])
+        self.layer4 = self._make_layer(layer_size[2],layer_size[3], layers[3])
+
+        # 输出层
+        self.fc_out = nn.Linear(layer_size[3], output_dim)
+
+    def _make_layer(self, in_features, out_features, blocks):
+        layers = []
+        layers.append(ResidualBlock(in_features, out_features,if_batchnorm=self.if_batchnorm))
+        for _ in range(1, blocks):
+            layers.append(ResidualBlock(out_features, out_features,if_batchnorm=self.if_batchnorm))
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        out = self.fc_in(x)
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+        out = self.fc_out(out)
+        return out
 class CNN_with_adaptive_pool(nn.Module):
     def __init__(self,input_dim,output_dim,hidden_feature_dim,adaptive_mode='max',cnn_layer=2):
         super(CNN_with_adaptive_pool, self).__init__()

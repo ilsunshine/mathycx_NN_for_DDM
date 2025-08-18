@@ -562,7 +562,7 @@ if __name__ == "__main__":
     for arg_path in experimental_args:
         option = f'--{arg_path}'
         if option in existing:
-            continue
+            continue #已经存在的参数不再添加
 
         value = get_nested_value(base_config, arg_path)
         if value is None:
@@ -570,22 +570,26 @@ if __name__ == "__main__":
 
         # 确定参数类型
         if isinstance(value, bool):
-            #arg_type = str_to_bool
-            arg_type=bool
-            #print(f"测试节点 option is {option},value is {value},arg_type is {arg_type}")
+            arg_type = str_to_bool
+            # arg_type=bool
+            # print(f"测试节点 option is {option},value is {value},arg_type is {arg_type}")
         elif isinstance(value, list):
             arg_type = lambda x: yaml.safe_load(x)
         else:
             arg_type = type(value)
 
         # 添加参数
+        print(f"测试节点 value is {value}")
+        print(f"测试节点 添加前的parser is {parser}")
         parser.add_argument(
             option,
-            type=arg_type,
+            type=arg_type,#注：对字符型或者列表不能直接指定为bool或者list,在调用时实际上输入value为str，会使用arg_type(value)，进行类型转化，float,int,str能正确转化(例如float("1.2")=1.2),但bool会将所有非空字符串转化为true
             default=value,
             help=f'动态参数: {arg_path} (默认: {value})'
         )
         existing.add(option)
+        print(f"测试节点 parser is {parser}")
+        print(f"测试节点 parser参数为 is {parser.parse_args()}")
 
     args = parser.parse_args()
 

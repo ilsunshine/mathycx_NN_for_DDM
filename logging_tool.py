@@ -37,9 +37,9 @@ def str_to_bool(value):
     if isinstance(value, bool):
         return value
     lower = value.lower()
-    if lower in ('yes', 'true', 't', 'y', ):
+    if lower in ('yes', 'true','True' 't', 'y', ):
         return True
-    elif lower in ('no', 'false', 'f', 'n', ):
+    elif lower in ('no', 'false', 'False','f', 'n', ):
         return False
     raise argparse.ArgumentTypeError(f'Invalid boolean: {value}')
 def setup_logging(config: Dict[str, Any]) -> str:

@@ -5,8 +5,10 @@ experiment_make.py
 *.h5
 *.zip
 *.tar.gz
+"__pycache__/"
 # 排除特定文件夹
 /data/
 /logs/**/*
 /549logs/**/*
 /563logs/**/*
+/configs/

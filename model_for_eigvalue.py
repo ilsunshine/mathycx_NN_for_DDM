@@ -673,6 +673,8 @@ if __name__ == "__main__":
                                                          file_prefix="data", global_data_keys=global_data_keys,
                                                          subdomain_data_keys=subdomain_data_keys, batch_size=batch_size, if_big_data=final_config["data"]["if_big_data"])
     # if final_config["attention_network"]["network"]=="MultiheadAttention"
+
+    #读取不同网络的类型与参数进行组装网络
     if weihgt_network_information["network"] == "AdaptivePoolEncoder":
         weight_network = AdaptivePoolEncoder(
             feature_dim=weihgt_network_information[weihgt_network_information["network"]]["feature_dim"],
@@ -706,7 +708,14 @@ if __name__ == "__main__":
                                          if_batchnorm=subdomain_network_information[subdomain_network_information["network"]]['if_batchnorm'])
     feature_out_network_input_dim=subdomain_network_information[subdomain_network_information["network"]][
                                  'output_dim']+weihgt_network_information[weihgt_network_information["network"]]["output_dim"]
-    feature_out_network=MLP(input_dim=feature_out_network_input_dim,output_dim=model_information["feature_out_dim"],layer_number=feature_out_network_information['MLP']["layer_number"],layer_size=feature_out_network_information['MLP']["layer_size"],act_fun=feature_out_network_information['MLP']["act_fun"])
+    if feature_out_network_information["network"]=="MLP":
+        feature_out_network=MLP(input_dim=feature_out_network_input_dim,output_dim=model_information["feature_out_dim"],layer_number=feature_out_network_information['MLP']["layer_number"],layer_size=feature_out_network_information['MLP']["layer_size"],act_fun=feature_out_network_information['MLP']["act_fun"])
+    elif feature_out_network_information["network"]=="FCResNet_Block":
+        feature_out_network=FCResNet_Block(input_dim=feature_out_network_input_dim,
+                                         output_dim=model_information["feature_out_dim"],
+                                         layers=feature_out_network_information[feature_out_network_information["network"]]['layers'],
+                                         layer_size=feature_out_network_information[feature_out_network_information["network"]]['layer_size'],
+                                         if_batchnorm=feature_out_network_information[feature_out_network_information["network"]]['if_batchnorm'])
     # physicis_network = MLP(input_dim=len(physics_information_keys),
     #                        output_dim=physics_network_information["MLP"]["output_dim"],
     #                        layer_number=physics_network_information["MLP"]["layer_number"],
@@ -759,12 +768,20 @@ if __name__ == "__main__":
     elif model_information["model_network"]=="Step_function_network_with_omegann":
         omega_network_information = final_config["omega_network"]
         omega_network_information_keys = omega_network_information['keys']
-        omega_network = MLP(input_dim=len(omega_network_information_keys),
+        if omega_network_information["network"]=="MLP":
+            omega_network = MLP(input_dim=len(omega_network_information_keys),
                                 output_dim=model_information["feature_out_dim"],
                                 layer_number=omega_network_information[omega_network_information["network"]][
                                     'layer_number'],
                                 layer_size=omega_network_information[omega_network_information["network"]][
-                                    'layer_size'],act_fun="leakyrelu")#后面需要将权重进行初始化，为了避免梯度消失，不使用relu
+                                    'layer_size'], act_fun="leakyrelu")  # 后面需要将权重进行初始化，为了避免梯度消失，不使用relu
+        elif omega_network_information["network"]=="FCResNet_Block":
+            omega_network=FCResNet_Block(input_dim=len(omega_network_information_keys),
+                                         output_dim=model_information["feature_out_dim"],
+                                         layers=omega_network_information[omega_network_information["network"]]['layers'],
+                                         layer_size=omega_network_information[omega_network_information["network"]]['layer_size'],
+                                         if_batchnorm=omega_network_information[omega_network_information["network"]]['if_batchnorm'])
+
         init_last_linear_zero_weight_bias_one(model=omega_network)#将omega_network最后一层权重初始化为0偏置初始化为1，初始输出为1,经过softmax后得到最终初始\omega输出为-1/feature_dim
         preditor_network=CustomNet_with_omiga(feature_dim=model_information["feature_out_dim"],initial_c=preditor_network_information["initial_c"],update_c=preditor_network_information["update_c"],min_c=preditor_network_information["min_c"])
         if_train_independ=model_information["if_train_independ"]  # Step_function_network_with_omegann是否启用交替训练

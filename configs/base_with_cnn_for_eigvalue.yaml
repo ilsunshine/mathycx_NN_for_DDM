@@ -77,8 +77,9 @@ query_network:
     input_dim: 2
     layer_number: 3
     layer_size: [32,64, 128]
+
 subdomain_network:
-  network: "FCResNet_Block"
+  network: "MLP"
   keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
   MLP:
     output_dim: 32
@@ -96,6 +97,11 @@ omega_network:
     output_dim: 32
     layer_number: 3
     layer_size: [32,64,128]
+  FCResNet_Block:
+    output_dim: 32
+    layers: [ 1,1,1,1 ]
+    layer_size: [ 32,64,64,128 ]
+    if_batchnorm: false
 preditor_network:
   network: "CustomNet"  #与"Step_function_network"匹配的预测网络
   #keys: ["kappa", "sigma"]
@@ -131,6 +137,11 @@ feature_output__network:
     layer_number: 2
     layer_size: [32,32]
     act_fun: sigmoid
+  FCResNet_Block:
+    output_dim: 32
+    layers: [ 1,1,1,1 ]
+    layer_size: [ 32,64,64,128 ]
+    if_batchnorm: false
 weight_network:
   network: "AdaptiveCNN"
   keys: ["weight_function_grid"]
@@ -195,9 +206,9 @@ training:
 #Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.padding_size","weight_network.AdaptiveCNN.initial_cnn_arg.if_use_batchNorm","weight_network.AdaptiveCNN.initial_cnn_arg.act_fun","weight_network.AdaptiveCNN.initial_cnn_arg.if_pooling",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
-Experimental_args: ["subdomain_network.FCResNet_Block.if_batchnorm"]
+Experimental_args: ["preditor_network.update_c"]
 #Experimental_purpose: "测试新数据集"
-Experimental_purpose: "测试网络的通畅性"
+Experimental_purpose: "测试subdomain使用resnet结构的效果2"
 logging:
   log_dir: "./logs"
   level: "INFO"

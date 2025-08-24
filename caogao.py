@@ -1,90 +1,61 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
+import subprocess
+import sys
 
 
-class ResidualBlock(nn.Module):
-    def __init__(self, in_features, out_features):
-        super(ResidualBlock, self).__init__()
-        self.fc1 = nn.Linear(in_features, out_features)
-        self.bn1 = nn.BatchNorm1d(out_features)
-        self.fc2 = nn.Linear(out_features, out_features)
-        self.bn2 = nn.BatchNorm1d(out_features)
-
-        # 如果输入输出维度不一致，用downsample调整
-        self.downsample = None
-        if in_features != out_features:
-            self.downsample = nn.Sequential(
-                nn.Linear(in_features, out_features),
-                nn.BatchNorm1d(out_features)
-            )
-
-    def forward(self, x):
-        identity = x
-
-        out = self.fc1(x)
-        out = self.bn1(out)
-        out = F.relu(out)
-
-        out = self.fc2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            identity = self.downsample(identity)
-
-        out += identity
-        out = F.relu(out)
-        return out
-
-
-class FCResNet_Block(nn.Module):
-    def __init__(self, input_dim, num_classes, layers=[2,2,2,2]):
-        """
-        input_dim: 输入特征维度
-        num_classes: 输出类别数
-        layers: 每层堆叠的 ResidualBlock 数量, 类似 ResNet18 的 [2,2,2,2]
-        """
-        super(FCResNet_Block, self).__init__()
-
-        # 起始投影层，统一映射到64维
-        self.fc_in = nn.Sequential(
-            nn.Linear(input_dim, 64),
-            nn.BatchNorm1d(64),
-            nn.ReLU(inplace=True)
-        )
-
-        # 残差层堆叠
-        self.layer1 = self._make_layer(64, 64, layers[0])
-        self.layer2 = self._make_layer(64, 128, layers[1])
-        self.layer3 = self._make_layer(128, 256, layers[2])
-        self.layer4 = self._make_layer(256, 512, layers[3])
-
-        # 输出层
-        self.fc_out = nn.Linear(512, num_classes)
-
-    def _make_layer(self, in_features, out_features, blocks):
-        layers = []
-        layers.append(ResidualBlock(in_features, out_features))
-        for _ in range(1, blocks):
-            layers.append(ResidualBlock(out_features, out_features))
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        out = self.fc_in(x)
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = self.fc_out(out)
-        return out
+def run_commands(commands):
+    for cmd in commands:
+        print(f"执行命令{cmd}")
+        try:
+            subprocess.run(cmd, shell=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"命令执行失败: {cmd}")
+            sys.exit(1)
 
 
 if __name__ == "__main__":
-    # 定义一个类似 ResNet18 的结构
-    model = FCResNet_Block(input_dim=100, num_classes=10, layers=[2,2,2,2])
-    print(model)
+    # 用于生成并依次执行命令脚本
+    py_dir = "./model_for_eigvalue.py"
+    # args={
+    #     "Experimental_args": ["scheduler.MultiStepLR.milestones","weight_network.AdaptivePoolEncoder.feature_dim","weight_network.AdaptivePoolEncoder.output_dim","training.epochs"],
+    #     "number_for_avg":5,#每个参数设置运行的次数，用于测试平均性能
+    #     "weight_network.AdaptivePoolEncoder.feature_dim":[16,16,8,8],
+    #     "weight_network.AdaptivePoolEncoder.output_dim": [256, 512, 256,512],
+    #     "scheduler.MultiStepLR.milestones":[[10,20,30],[10,20,30],[10,20],[10,20]],
+    #     "training.epochs":[40,40,40,40]
+    # }
+    args = {
+        "Experimental_args": ["preditor_network.update_c", "subdomain_network.FCResNet_Block.layer_size", ],
+        "number_for_avg": 1,  # 每个参数设置运行的次数，用于测试平均性能
+        # "preditor_network.MLP.act_fun":["relu","tanh","relu","tanh","relu","tanh"],
+        # "weight_network.AdaptivePoolEncoder.output_dim": [256, 512, 256,512],
+        # "scheduler.MultiStepLR.milestones":[[10,20,30],[10,20,30],[10,20],[10,20]],
+        "preditor_network.update_c": [0.5, 0.8, 0.95],
+        # "model.model_network":["Step_function_network_with_omegann","Step_function_network_with_omegann","Step_function_network_with_omegann","Step_function_network_with_omegann","Step_function_network_with_omegann","Step_function_network_with_omegann"],
+        "subdomain_network.FCResNet_Block.layer_size": [[16, 16, 32, 32], [16, 16, 32, 32], [16, 16, 32, 32]],
+        # "subdomain_network.FCResNet_Block.layer_size":[[16,16,16,16],[16,16,16,16],[16,16,16,16]],
+        # "subdomain_network.FCResNet_Block.layer_size":[[32,32,16,16],[32,32,16,16],[32,32,16,16]],
+        # "subdomain_network.FCResNet_Block.layer_size":[[8,16,32,32],[8,16,32,32],[8,16,32,32]],
+        # "subdomain_network.FCResNet_Block.if_batchnorm": ["False",False,False],
+        # "subdomain_network.FCResNet_Block.if_batchnorm": [True,True,True,True,True,True],
 
-    # 测试一下
-    x = torch.randn(32, 100)  # batch=32, 输入维度=100
-    y = model(x)
-    print(y.shape)  # 期望: torch.Size([32, 10])
+        # "preditor_network.initial_c": [0.2,0.2,0.2,5.0,5.0,5.0],
+        # "preditor_network.update_c": [0.5,0.65,0.8,0.5,0.65,0.8]
+    }
+    commands = []
+    experiment_len = len(args[args["Experimental_args"][0]])
+    for i in range(experiment_len):
+        for j in range(args["number_for_avg"]):
+            command = "python " + py_dir + " "
+            for arg_name in args["Experimental_args"]:
+                arg_value = args[arg_name][i]
+                if type(args[arg_name][i]) == list:
+                    command += "--" + arg_name + '=' + "\"" + str(arg_value) + "\" "
+                elif type(args[arg_name][i]) == bool:
+                    command += "--" + arg_name + ' ' + "\"" + str(arg_value) + "\" "
+                else:
+                    command += "--" + arg_name + '=' + str(arg_value) + " "
+            commands.append(command)
+    commands.append("sleep 800s")  # 等待时间确保其他进程已经完成
+    commands.append("shutdown")
+    run_commands(commands)
+    print("所有命令执行完成")

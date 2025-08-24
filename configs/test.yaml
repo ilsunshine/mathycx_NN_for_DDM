@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# åŸºç¡€å‚æ•°é…ç½®
+# »ù´¡²ÎÊıÅäÖÃ
 
 data:
   root_dir: "./data/low_frequency_interatation/"
@@ -9,7 +9,7 @@ data:
   subdomain_data_keys: [ 'number_of_eigval_in_found', 'blk_size',
                          'm_l', 'size_of_weight_function',"weight_function_grid","x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y" ]
   batch_size: 256
-  if_big_data: false #æ•°æ®é‡å°çš„æ—¶å€™å°†æ‰€æœ‰æ•°æ®ä¸€æ¬¡æ€§åŠ è½½åˆ°deviceä¸­ï¼Œé€Ÿåº¦æ›´å¿«ï¼Œæ•°æ®é‡å¤§çš„æ—¶å€™åªè¿›è¡Œæ‰¹æ¬¡çš„é€æ­¥åŠ è½½
+  if_big_data: false #Êı¾İÁ¿Ğ¡µÄÊ±ºò½«ËùÓĞÊı¾İÒ»´ÎĞÔ¼ÓÔØµ½deviceÖĞ£¬ËÙ¶È¸ü¿ì£¬Êı¾İÁ¿´óµÄÊ±ºòÖ»½øĞĞÅú´ÎµÄÖğ²½¼ÓÔØ
 
 
 #model:
@@ -18,7 +18,7 @@ data:
 #  prediction: "discrete"
 #  output_dim: 20
 #  optim: "Adam"
-#  lr:  0.0001 #ç»è¿‡åˆæ­¥æµ‹è¯•åœ¨0.0001/0.0005æ•ˆæœè¾ƒå¥½ï¼Œå¯èƒ½è¾ƒå°çš„å­¦ä¹ ç‡æ›´èƒ½é€‚åˆ
+#  lr:  0.0001 #¾­¹ı³õ²½²âÊÔÔÚ0.0001/0.0005Ğ§¹û½ÏºÃ£¬¿ÉÄÜ½ÏĞ¡µÄÑ§Ï°ÂÊ¸üÄÜÊÊºÏ
 #  #lr: 1000000.0
 #  scheduler: "MultiStepLR"
 #  loss: "MSE_Loss"
@@ -34,11 +34,11 @@ data:
 #    gamma: 0.5
 model:
   #prediction: "discrete"
-  prediction: "continue" #è¾“å‡ºç±»å‹æ˜¯è¿ç»­å€¼è¿˜æ˜¯ç¦»æ•£å€¼
-  output_dim: 20 #ç”¨äºåˆ†ç±»ä»»åŠ¡æµ‹è¯•çš„ç»´åº¦
+  prediction: "continue" #Êä³öÀàĞÍÊÇÁ¬ĞøÖµ»¹ÊÇÀëÉ¢Öµ
+  output_dim: 20 #ÓÃÓÚ·ÖÀàÈÎÎñ²âÊÔµÄÎ¬¶È
   feature_out_dim: 40
-  optim: "Adam" #ä¼˜åŒ–å™¨é€‰æ‹©ï¼Œç›®å‰åªå†™äº†Adam(2025.08.10)
-  lr:  0.0001 #ç»è¿‡åˆæ­¥æµ‹è¯•åœ¨0.0001/0.0005æ•ˆæœè¾ƒå¥½ï¼Œå¯èƒ½è¾ƒå°çš„å­¦ä¹ ç‡æ›´èƒ½é€‚åˆ
+  optim: "Adam" #ÓÅ»¯Æ÷Ñ¡Ôñ£¬Ä¿Ç°Ö»Ğ´ÁËAdam(2025.08.10)
+  lr:  0.0001 #¾­¹ı³õ²½²âÊÔÔÚ0.0001/0.0005Ğ§¹û½ÏºÃ£¬¿ÉÄÜ½ÏĞ¡µÄÑ§Ï°ÂÊ¸üÄÜÊÊºÏ
   scheduler: "MultiStepLR"
   #loss: "cross_entropy_loss"
   #loss: "cross_entropy_loss_with_mse"
@@ -51,22 +51,22 @@ model:
   #tho_generator: "Tho_generator_uniform_0_1"
   test_tho_generator: "Tho_generator_uniform_xiugai"
   model_network: "Step_function_network"
-  if_train_independ: false #Step_function_network_with_omegannæ˜¯å¦å¯ç”¨äº¤æ›¿è®­ç»ƒ
-  alternating_epoch: 5 #Step_function_network_with_omegannæ˜¯å¦å¯ç”¨äº¤æ›¿è®­ç»ƒçš„äº¤æ›¿è½®æ¬¡
+  if_train_independ: false #Step_function_network_with_omegannÊÇ·ñÆôÓÃ½»ÌæÑµÁ·
+  alternating_epoch: 5 #Step_function_network_with_omegannÊÇ·ñÆôÓÃ½»ÌæÑµÁ·µÄ½»ÌæÂÖ´Î
   #model_network: "Step_function_network_with_omegann"
-  test_epoch: 10 #æ¯éš”å¤šå°‘è½®è¿›è¡Œä¸€æ¬¡æµ‹è¯•
+  test_epoch: 10 #Ã¿¸ô¶àÉÙÂÖ½øĞĞÒ»´Î²âÊÔ
 scheduler:
   MultiStepLR:
     milestones: [10, 20]
     gamma: 0.5
 loss:
   cross_entropy_loss:
-    label_smoothing: 0.2 #ç»åˆæ­¥æµ‹è¯•0.2åœ¨å¹³å‡çš„è®­ç»ƒæµ‹è¯•å‡†ç¡®ç‰ˆä»¥åŠæµ‹è¯•é›†ä¸Šçš„æœ€ä¼˜å‡†ç¡®åº¦éƒ½æœ‰è¾ƒä¼˜çš„è¡¨ç°ï¼Œè¿™é‡Œ0.1æ˜¯ä¸ºäº†åœ¨å®éªŒ\æµ‹è¯•preditorç½‘ç»œæ¶æ„çš„å½±å“ä¿æŒå‚æ•°ä¸€è‡´æ€§
+    label_smoothing: 0.2 #¾­³õ²½²âÊÔ0.2ÔÚÆ½¾ùµÄÑµÁ·²âÊÔ×¼È·°æÒÔ¼°²âÊÔ¼¯ÉÏµÄ×îÓÅ×¼È·¶È¶¼ÓĞ½ÏÓÅµÄ±íÏÖ£¬ÕâÀï0.1ÊÇÎªÁËÔÚÊµÑé\²âÊÔpreditorÍøÂç¼Ü¹¹µÄÓ°Ïì±£³Ö²ÎÊıÒ»ÖÂĞÔ
     if_update_weights: true
   cross_entropy_loss_with_mse:
-    label_smoothing: 0.2 #ç»è¿‡åˆæ­¥æµ‹è¯•0.2,10.0ï¼Œfalseæ˜¯è¾ƒå¥½çš„å‚æ•°ï¼Œç‰¹åˆ«æ˜¯if_update_weightså¼€å¯æ—¶æ— æ³•è¿›è¡Œä¼˜åŒ–ä¸è®­ç»ƒå› æ­¤å¿…é¡»å…³é—­
+    label_smoothing: 0.2 #¾­¹ı³õ²½²âÊÔ0.2,10.0£¬falseÊÇ½ÏºÃµÄ²ÎÊı£¬ÌØ±ğÊÇif_update_weights¿ªÆôÊ±ÎŞ·¨½øĞĞÓÅ»¯ÓëÑµÁ·Òò´Ë±ØĞë¹Ø±Õ
     #alpha: 10.0
-    alpha: 10.0 #2025.6.11ä¸´æ—¶æµ‹è¯•ç”¨
+    alpha: 10.0 #2025.6.11ÁÙÊ±²âÊÔÓÃ
     if_update_weights: true
 #network:
 #  d_model: 32
@@ -89,7 +89,7 @@ subdomain_network:
     output_dim: 32
     layers: [ 1,1,1,1]
     layer_size: [32,64,64,128]
-    if_batchnorm: false
+    if_batchnorm: true
 omega_network:
   network: "MLP"
   keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
@@ -103,13 +103,13 @@ omega_network:
     layer_size: [ 32,64,64,128 ]
     if_batchnorm: false
 preditor_network:
-  network: "CustomNet"  #ä¸"Step_function_network"åŒ¹é…çš„é¢„æµ‹ç½‘ç»œ
+  network: "CustomNet"  #Óë"Step_function_network"Æ¥ÅäµÄÔ¤²âÍøÂç
   #keys: ["kappa", "sigma"]
 #  initial_c: 1.0
 #  update_c: 2.0
-  initial_c: 0.2 #åˆæ­¥æµ‹è¯•é€æ­¥å‡å°åˆ°1/256æ—¶æœ‰è¾ƒå¥½çš„è®­ç»ƒæ•ˆæœï¼Œè®¾ç½®update_c=1.0ä½œä¸ºä¸æ›´æ–°å‚æ•°çš„ç©ºç™½å¯¹ç…§
+  initial_c: 0.2 #³õ²½²âÊÔÖğ²½¼õĞ¡µ½1/256Ê±ÓĞ½ÏºÃµÄÑµÁ·Ğ§¹û£¬ÉèÖÃupdate_c=1.0×÷Îª²»¸üĞÂ²ÎÊıµÄ¿Õ°×¶ÔÕÕ
   update_c: 0.8  #c=c*update_c
-  min_c: 0.003125 #ç»è¿‡æµ‹è¯•ï¼Œè¿‡å°çš„cå¯èƒ½ä¼šå¯¼è‡´ä¼˜åŒ–ä¸ç¨³å®šï¼Œæ— æ³•è¾¾åˆ°å±€éƒ¨æœ€ä¼˜ï¼Œè¿™é‡Œéœ€è¦è®¾ç½®æœ€å°çš„é˜ˆå€¼ï¼Œå½“å°äºè¿™ä¸ªé˜ˆå€¼æ—¶ä¸åœ¨è¿›è¡Œæ›´æ–°ï¼Œ0.003125ä¸ºæµ‹è¯•æ—¶æœ€ä¼˜æŸå¤±æ—¶çš„cé˜ˆå€¼
+  min_c: 0.003125 #¾­¹ı²âÊÔ£¬¹ıĞ¡µÄc¿ÉÄÜ»áµ¼ÖÂÓÅ»¯²»ÎÈ¶¨£¬ÎŞ·¨´ïµ½¾Ö²¿×îÓÅ£¬ÕâÀïĞèÒªÉèÖÃ×îĞ¡µÄãĞÖµ£¬µ±Ğ¡ÓÚÕâ¸öãĞÖµÊ±²»ÔÚ½øĞĞ¸üĞÂ£¬0.003125Îª²âÊÔÊ±×îÓÅËğÊ§Ê±µÄcãĞÖµ
 #  CustomNet:
 #
 #  CustomNet_with_omiga:
@@ -123,7 +123,7 @@ preditor_network:
 #    output_dim: 32
 #    layer_number: 3
 #    #layer_size: [16,16]
-#    layer_size: [32,64,128] #åŸæœ‰çš„ä»£ç é”™è¯¯çš„å°†physics_networkçš„layer_sizeè¯»å–ä¸ºäº†preditor_networkçš„layer_sizeï¼Œè¿™é‡Œä¸ºäº†ä¿è¯åé¢å®éªŒçš„ä¸€è‡´æ€§ï¼Œæ‰©å¤§ä¸º 64 ,64ä¸å‘ç°é”™è¯¯æ—¶çš„è¯»å–ä¸€è‡´ï¼Œ 2025.4.27
+#    layer_size: [32,64,128] #Ô­ÓĞµÄ´úÂë´íÎóµÄ½«physics_networkµÄlayer_size¶ÁÈ¡ÎªÁËpreditor_networkµÄlayer_size£¬ÕâÀïÎªÁË±£Ö¤ºóÃæÊµÑéµÄÒ»ÖÂĞÔ£¬À©´óÎª 64 ,64Óë·¢ÏÖ´íÎóÊ±µÄ¶ÁÈ¡Ò»ÖÂ£¬ 2025.4.27
 #attention_network:
 #  network: "MultiheadAttention"
 #  MultiheadAttention:
@@ -140,13 +140,13 @@ feature_output__network:
   FCResNet_Block:
     output_dim: 32
     layers: [ 1,1,1,1 ]
-    layer_size: [8, 16, 32, 32] #ç»è¿‡æµ‹è¯•[8, 16, 32, 32]+BNèƒ½åœ¨æ›´æ–°ç³»æ•°0.8æ—¶å¾—åˆ°è¾ƒå¥½çš„ç»“æœ
-    if_batchnorm: true
+    layer_size: [ 32,64,64,128 ]
+    if_batchnorm: false
 weight_network:
   network: "AdaptiveCNN"
   keys: ["weight_function_grid"]
   AdaptivePoolEncoder:
-    #ç»è¿‡åˆæ­¥æµ‹è¯•16-64æ˜¯è¾ƒå¥½çš„å‚æ•°ç»„åˆ
+    #¾­¹ı³õ²½²âÊÔ16-64ÊÇ½ÏºÃµÄ²ÎÊı×éºÏ
     feature_dim: 16
     output_dim: 64
   AdaptiveCNN:
@@ -156,11 +156,11 @@ weight_network:
       layer_number: 4
       kernel_size: [3,3,3,3]
       #channel_size: [16,32,64,128]
-      channel_size: [8, 16, 32, 64] #ç»è¿‡åˆæ­¥æµ‹è¯•å‡å°çš„cnnåè€Œæœ‰è¾ƒå¥½çš„æµ‹è¯•æ•ˆæœ
+      channel_size: [8, 16, 32, 64] #¾­¹ı³õ²½²âÊÔ¼õĞ¡µÄcnn·´¶øÓĞ½ÏºÃµÄ²âÊÔĞ§¹û
       padding_size: [1,1,1,1]
       if_use_batchNorm: [true,true,true,true]
       act_fun: "relu"
-      if_pooling: [true,true,false,false] #è€ƒè™‘åˆ°æœ‰çš„æƒé‡æ–‡ä»¶çš„å›¾åƒè¾ƒå°æ— æ³•æ”¯æŒè¿‡å¤šçš„pooling
+      if_pooling: [true,true,false,false] #¿¼ÂÇµ½ÓĞµÄÈ¨ÖØÎÄ¼şµÄÍ¼Ïñ½ÏĞ¡ÎŞ·¨Ö§³Ö¹ı¶àµÄpooling
       pooling_model: "max"
       pooling_size: [2,2,2,2]
     final_cnn_arg:
@@ -186,7 +186,7 @@ tho_generator:
     beta: -0.4
     low_rate: 0.75
     up_rate: 2.0
-#    low_rate: 1.0  #æµ‹è¯•åå‘ä¼ æ’­æ˜¯å¦æœ‰æ•ˆ
+#    low_rate: 1.0  #²âÊÔ·´Ïò´«²¥ÊÇ·ñÓĞĞ§
 #    up_rate: 1.0
     mean_rate: 0.25
   Tho_generator_network:
@@ -200,15 +200,15 @@ tho_generator:
       act_fun: "sigmoid"
       pow_k: 1
 training:
-  epochs: 10
+  epochs: 80
   batch_size: 128
 
 #Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.padding_size","weight_network.AdaptiveCNN.initial_cnn_arg.if_use_batchNorm","weight_network.AdaptiveCNN.initial_cnn_arg.act_fun","weight_network.AdaptiveCNN.initial_cnn_arg.if_pooling",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
-Experimental_args: ["preditor_network.update_c"]
-#Experimental_purpose: "æµ‹è¯•æ–°æ•°æ®é›†"
-Experimental_purpose: "æµ‹è¯•subdomainä½¿ç”¨resnetç»“æ„çš„æ•ˆæœ2"
+Experimental_args: ["preditor_network.update_c","subdomain_network.FCResNet_Block.layer_size"]
+#Experimental_purpose: "²âÊÔĞÂÊı¾İ¼¯"
+Experimental_purpose: "²âÊÔÍøÂçÍ¨³©ĞÔ"
 logging:
   log_dir: "./logs"
   level: "INFO"

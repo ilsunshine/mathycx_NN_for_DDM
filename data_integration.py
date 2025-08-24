@@ -463,7 +463,7 @@ def isolate_problem_files(log_path, output_dir, problem_dir):
     """
     # 创建问题文件存放目录
     os.makedirs(problem_dir, exist_ok=True)
-
+    #os.makedirs(log_path,exist_ok=True)
     # 从日志中提取所有问题data编号
     pattern = r'data(\d+)'  # 匹配data后跟数字的编号
     problem_numbers = set()  # 使用集合避免重复
@@ -891,54 +891,59 @@ def add_data_to_hdf5(data_dir):#增加部分数据结构测试效果
             # #print(f"成功处理: {file_path} (新维度: {target_length})")
 if __name__ == "__main__":
     #数据整合
-    input_path = r'D:\pycharm_project\NN_for_DDM\data\medium_frequency_k_with_cluster\medium_frequency_k'  # 替换为你的输入路径
-    output_dir = r'D:\pycharm_project\NN_for_DDM\data\medium_frequency_k_with_cluster_with_interatation'  # 替换为你的输出目录
-    process_subdirectories(input_path=input_path, output_dir=output_dir)
+    # input_path = r'D:\pycharm_project\NN_for_DDM\data\low_frequency_k2\low_frenquency_k2'  # 替换为你的输入路径
+    # output_dir = r'D:\pycharm_project\NN_for_DDM\data\low_frequency_k2_interatation'  # 替换为你的输出目录
+    # process_subdirectories(input_path=input_path, output_dir=output_dir)
+    # split_ratio = 0.9#训练数据占所有数据的比例
+    # #
+    # # # #隔离错误文件
+    # isolate_problem_files(
+    #     log_path=os.path.join(output_dir,"processing_errors.txt"),
+    #     output_dir=output_dir,
+    #     problem_dir=os.path.join(output_dir,"problem_data")
+    # )
     #
-    # # #隔离错误文件
-    isolate_problem_files(
-        log_path=r"D:\pycharm_project\NN_for_DDM\data\medium_frequency_k_with_cluster_with_interatation\processing_errors.txt",
-        output_dir=r'D:\pycharm_project\NN_for_DDM\data\medium_frequency_k_with_cluster_with_interatation',
-        problem_dir=r"D:\pycharm_project\NN_for_DDM\data\medium_frequency_k_with_cluster_with_interatation\problem_data"
-    )
+    # # #process_hdf5_subdomains(file_path=output_dir)
+    # # #打印数据结构
+    # # # file_path = r"D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\train_data\data6.h5"  # 替换为你的HDF5文件路径
+    # # # print_hdf5_structure(file_path)
+    # # # #
+    # # # 处理weight_function延拓为weight_function_grid
+    # path_dir=output_dir
+    # file_list=get_h5_file_paths(path_dir)
+    # for file_dir in file_list:
+    #     print(file_dir)
+    #     # print_hdf5_structure(file_dir)
+    #     A=process_hdf5_subdomains(file_path=file_dir,alpha=2,save=True)
+    # #增加部分参数
+    # add_data_to_hdf5(output_dir)
+    # # #分配数据进行训练
+    # train_num, val_num = split_h5_files(
+    #     source_dir=output_dir,
+    #     train_dir=os.path.join(output_dir,'train_data'),
+    #     val_dir=os.path.join(output_dir,'test_data'),
+    #     split_ratio=split_ratio,
+    #     copy_mode=True,
+    #     random_seed=42#设置随机数种子保证可复现性
+    # )
+    #
+    # print(f"分配完成：训练集 {train_num} 个，验证集 {val_num} 个")
 
-    # #process_hdf5_subdomains(file_path=output_dir)
-    # #打印数据结构
-    # # file_path = r"D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\train_data\data6.h5"  # 替换为你的HDF5文件路径
-    # # print_hdf5_structure(file_path)
-    # # #
-    # # 处理weight_function延拓为weight_function_grid
-    path_dir=output_dir
-    file_list=get_h5_file_paths(path_dir)
-    for file_dir in file_list:
-        print(file_dir)
-        print_hdf5_structure(file_dir)
-        A=process_hdf5_subdomains(file_path=file_dir,alpha=2,save=True)
-    #增加部分参数
-    add_data_to_hdf5(output_dir)
-    # #分配数据进行训练
-    train_num, val_num = split_h5_files(
-        source_dir=output_dir,
-        train_dir=os.path.join(output_dir,'train_data'),
-        val_dir=os.path.join(output_dir,'test_data'),
-        split_ratio=0.8,
-        copy_mode=True,
-        random_seed=42#设置随机数种子保证可复现性
-    )
 
-    print(f"分配完成：训练集 {train_num} 个，验证集 {val_num} 个")
 
     #合并数据集
-    # rename_and_move_files(input_dir=r"D:\pycharm_project\NN_for_DDM\data\medium_frequency_interatation\train_data",output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_and_medium_frequency_interatation\train_data",number=1000)
     # rename_and_move_files(input_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\train_data",
-    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_and_medium_frequency_interatation\train_data",
+    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k_plus_interation\train_data",
+    #                       number=1000)
+    # rename_and_move_files(input_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k2_interatation\train_data",
+    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k_plus_interation\train_data",
     #                       number=0)
     #
-    # rename_and_move_files(input_dir=r"D:\pycharm_project\NN_for_DDM\data\medium_frequency_interatation\test_data",
-    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_and_medium_frequency_interatation\test_data",
-    #                       number=1000)
     # rename_and_move_files(input_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\test_data",
-    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_and_medium_frequency_interatation\test_data",
+    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k_plus_interation\test_data",
+    #                       number=1000)
+    # rename_and_move_files(input_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k2_interatation\test_data",
+    #                       output_dir=r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k_plus_interation\test_data",
     #                       number=0)
 
 
@@ -947,7 +952,7 @@ if __name__ == "__main__":
     #检验参数结构
 
     # #重复数据检验
-    file_path = r"D:\pycharm_project\NN_for_DDM\data\low_frequency_interatation\data6.h5"  # 替换为你的HDF5文件路径
+    file_path = r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k2_interatation\data0.h5" # 替换为你的HDF5文件路径
     data_repeatability(file_path)
     #
     # #分配数据进行训练
@@ -975,7 +980,7 @@ if __name__ == "__main__":
 # 测试数据整合的代码
 
     #打印数据结构
-    file_path = r"D:\pycharm_project\NN_for_DDM\data\medium_frequency_interatation\train_data\data6.h5"  # 替换为你的HDF5文件路径
+    file_path = r"D:\pycharm_project\NN_for_DDM\data\low_frequency_k2_interatation\data0.h5"  # 替换为你的HDF5文件路径
     print_hdf5_structure(file_path)
     print_scalar_datasets(file_path)
 

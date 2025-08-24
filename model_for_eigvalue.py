@@ -532,7 +532,9 @@ if __name__ == "__main__":
     #model_modify_config，命令行参数，为在加载模型权重文件对应的配置的基础上若需要进一步修改将需要修改的参数的文件传入
     #最终得到参数的覆盖优先级：命令行传入参数最高，model_modify_config其次，model_config再次之，base_config文件最低
     base_parser = argparse.ArgumentParser()
-    base_parser.add_argument('--config', default='./configs/base_with_cnn_for_eigvalue.yaml', help="基础配置文件路劲")
+    #base_parser.add_argument('--config', default='./configs/base_with_cnn_for_eigvalue.yaml', help="基础配置文件路劲")
+    base_parser.add_argument('--config', default='./configs/test.yaml', help="基础配置文件路劲")
+    print("------------------注意，现在是使用的test.yaml用于测试--------------------------")
     base_args, _ = base_parser.parse_known_args()
     base_config = load_config(base_args.config)
 
@@ -880,12 +882,12 @@ if __name__ == "__main__":
                 data_item = data_item[keys[i + 1]]
             data.append(data_item)
         heads += ['配置文件保存路劲', '总共训练轮次', '最优训练损失轮次', '最优训练损失', '最优训练准确度轮次',
-                  '最优训练准确度', '在测试集上的最优测试准确度', "最优平均召回率", "最优平均准确度", "最优mAP","训练最优平均L2相对误差","训练最优平均L2相对误差轮次","训练最优最大L2相对误差","训练最优最大L2相对误差轮次"]
+                  '最优训练准确度', '在测试集上的最优测试准确度', "最优平均召回率", "最优平均准确度", "最优mAP","训练最优平均L2相对误差","训练最优平均L2相对误差轮次","训练最优最大L2相对误差","训练最优最大L2相对误差轮次","测试集上最优mAP","测试集上最优mAP轮次","测试集上的最优损失函数","测试集上最优损失函数轮次"]
         data += [log_dir, final_config["training"]['epochs'], test_model.best_train_loss_epoch,
                  test_model.best_train_loss, test_model.best_train_acc_epoch,
                  test_model.best_train_acc, test_model.best_test_acc, test_model.best_train_recall,
                  test_model.best_train_precision, test_model.best_train_map,test_model.best_train_mean_L2_relative_error,test_model.best_train_mean_L2_relative_error_epoch,
-                 test_model.best_train_max_L2_relative_error,test_model.best_train_max_L2_relative_error_epoch]
+                 test_model.best_train_max_L2_relative_error,test_model.best_train_max_L2_relative_error_epoch,test_model.best_test_map,test_model.best_test_map_epoch,test_model.best_test_loss,test_model.best_test_loss_epoch]
         record_data(experiment_path, headers=heads, data=data)
         record_data(args_path, headers=heads, data=data)  # 记录同样参数下训练用于求平均，避免随机性带来的误差
 

@@ -532,9 +532,9 @@ if __name__ == "__main__":
     #model_modify_config，命令行参数，为在加载模型权重文件对应的配置的基础上若需要进一步修改将需要修改的参数的文件传入
     #最终得到参数的覆盖优先级：命令行传入参数最高，model_modify_config其次，model_config再次之，base_config文件最低
     base_parser = argparse.ArgumentParser()
-    #base_parser.add_argument('--config', default='./configs/base_with_cnn_for_eigvalue.yaml', help="基础配置文件路劲")
-    base_parser.add_argument('--config', default='./configs/test.yaml', help="基础配置文件路劲")
-    print("------------------注意，现在是使用的test.yaml用于测试--------------------------")
+    base_parser.add_argument('--config', default='./configs/base_with_cnn_for_eigvalue.yaml', help="基础配置文件路劲")
+    # base_parser.add_argument('--config', default='./configs/test.yaml', help="基础配置文件路劲")
+    # print("------------------注意，现在是使用的test.yaml用于测试--------------------------")
     base_args, _ = base_parser.parse_known_args()
     base_config = load_config(base_args.config)
 
@@ -563,11 +563,16 @@ if __name__ == "__main__":
     experimental_args = base_config.get('Experimental_args', [])
     for arg_path in experimental_args:
         option = f'--{arg_path}'
+        print(f"测试节点 添加的option is {option}")
         if option in existing:
             continue #已经存在的参数不再添加
 
         value = get_nested_value(base_config, arg_path)
+        print(f"测试节点 value is {value}")
+        print(f"测试节点 添加前的parser is {parser}")
+
         if value is None:
+            print(f"value 无效 is {value}")
             continue  # 路径无效则跳过
 
         # 确定参数类型
@@ -579,10 +584,9 @@ if __name__ == "__main__":
             arg_type = lambda x: yaml.safe_load(x)
         else:
             arg_type = type(value)
-
+        #print(f"测试节点 option is {option},value is {value},arg_type is {arg_type}")
         # 添加参数
-        print(f"测试节点 value is {value}")
-        print(f"测试节点 添加前的parser is {parser}")
+
         parser.add_argument(
             option,
             type=arg_type,#注：对字符型或者列表不能直接指定为bool或者list,在调用时实际上输入value为str，会使用arg_type(value)，进行类型转化，float,int,str能正确转化(例如float("1.2")=1.2),但bool会将所有非空字符串转化为true
@@ -590,8 +594,8 @@ if __name__ == "__main__":
             help=f'动态参数: {arg_path} (默认: {value})'
         )
         existing.add(option)
-        print(f"测试节点 parser is {parser}")
-        print(f"测试节点 parser参数为 is {parser.parse_args()}")
+        # print(f"测试节点 parser is {parser}")
+        # print(f"测试节点 parser参数为 is {parser.parse_args()}")
 
     args = parser.parse_args()
 

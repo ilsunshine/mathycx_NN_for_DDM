@@ -88,7 +88,7 @@ subdomain_network:
   FCResNet_Block:
     output_dim: 32
     layers: [ 1,1,1,1]
-    layer_size: [32,64,64,128]
+    layer_size: [8, 16, 32, 32]
     if_batchnorm: true
 omega_network:
   network: "MLP"
@@ -140,8 +140,8 @@ feature_output__network:
   FCResNet_Block:
     output_dim: 32
     layers: [ 1,1,1,1 ]
-    layer_size: [ 32,64,64,128 ]
-    if_batchnorm: false
+    layer_size: [8, 16, 32, 32] #经过测试[8, 16, 32, 32]+BN能在更新系数0.8时得到较好的结果
+    if_batchnorm: true
 weight_network:
   network: "AdaptiveCNN"
   keys: ["weight_function_grid"]
@@ -200,13 +200,13 @@ tho_generator:
       act_fun: "sigmoid"
       pow_k: 1
 training:
-  epochs: 80
+  epochs: 10
   batch_size: 128
 
 #Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.padding_size","weight_network.AdaptiveCNN.initial_cnn_arg.if_use_batchNorm","weight_network.AdaptiveCNN.initial_cnn_arg.act_fun","weight_network.AdaptiveCNN.initial_cnn_arg.if_pooling",
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
-Experimental_args: ["preditor_network.update_c","subdomain_network.FCResNet_Block.layer_size"]
+Experimental_args: ["preditor_network.update_c","model.feature_out_dim","subdomain_network.network"]
 #Experimental_purpose: "测试新数据集"
 Experimental_purpose: "测试网络通畅性"
 logging:

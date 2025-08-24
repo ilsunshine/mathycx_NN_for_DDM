@@ -88,8 +88,8 @@ subdomain_network:
   FCResNet_Block:
     output_dim: 32
     layers: [ 1,1,1,1]
-    layer_size: [32,64,64,128]
-    if_batchnorm: false
+    layer_size: [8, 16, 32, 32] #2025.08.24:测试时使用较小的layer_size能在避免过拟合，测试表明[8, 16, 32, 32]采用BN技术能得到较好的实验结果，不采用BN时[16,16,16,16]的效果较好
+    if_batchnorm: true
 omega_network:
   network: "MLP"
   keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
@@ -200,7 +200,7 @@ tho_generator:
       act_fun: "sigmoid"
       pow_k: 1
 training:
-  epochs: 10
+  epochs: 80
   batch_size: 128
 
 #Experimental_args: ["weight_network.AdaptiveCNN.initial_cnn_arg.layer_number","weight_network.AdaptiveCNN.initial_cnn_arg.kernel_size","weight_network.AdaptiveCNN.initial_cnn_arg.channel_size",
@@ -208,7 +208,7 @@ training:
 #                    "weight_network.AdaptiveCNN.initial_cnn_arg.pooling_model","weight_network.AdaptiveCNN.initial_cnn_arg.pooling_size"]
 Experimental_args: ["preditor_network.update_c"]
 #Experimental_purpose: "测试新数据集"
-Experimental_purpose: "测试subdomain使用resnet结构的效果2"
+Experimental_purpose: "测试网络的通畅性"
 logging:
   log_dir: "./logs"
   level: "INFO"

@@ -36,7 +36,7 @@ model:
   #prediction: "discrete"
   prediction: "continue" #输出类型是连续值还是离散值
   output_dim: 20 #用于分类任务测试的维度
-  feature_out_dim: 40
+  feature_out_dim: 80 #2025.08.24 数据变动40->80 增大输出维度不会使得效果变差
   optim: "Adam" #优化器选择，目前只写了Adam(2025.08.10)
   lr:  0.0001 #经过初步测试在0.0001/0.0005效果较好，可能较小的学习率更能适合
   scheduler: "MultiStepLR"
@@ -79,7 +79,7 @@ query_network:
     layer_size: [32,64, 128]
 
 subdomain_network:
-  network: "MLP"
+  network: "FCResNet_Block" #经测试"FCResNet_Block"可能有更好的表现效果
   keys:  ['H', 'h','overlap','kappa', 'sigma','overlap','kappah','kappaH','sigmah','sigmaH','m_l',"x_max","x_min","y_min","y_max","x_length","y_length","center_x","center_y"]
   MLP:
     output_dim: 32

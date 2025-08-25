@@ -45,7 +45,7 @@ class evigal_number_model_for_eigvalue:
         #     self.test_tho_generator = self.tho_generator  # 测试用的tho_generator,测试与训练用的可能不一致
         # else:
         #     self.test_tho_generator = test_tho_generator
-        if device is None:
+        if device is None or device=="None":
             self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         else:
             self.device = device
@@ -550,7 +550,7 @@ if __name__ == "__main__":
     parser.add_argument("--Experimental_args", type=list, help="实验的参数")
     parser.add_argument("--model_pth", default="None", type=str, help="模型加载路劲,默认值为None,表示不加载模型权重")
     parser.add_argument("--model_config", default='None', type=str, help="模型权重文件对应的配置文件用于加载模型的")
-
+    parser.add_argument("--model.device", default='None', type=str, help="模型权重文件对应的配置文件用于加载模型的")
     parser.add_argument("--preditor_network.update_c",  type=float,
                         help="温度系数的更新系数")  # 覆盖优先级：传入参数大于model_modify_config大于model_config大于base_parser中的config
 
@@ -658,6 +658,14 @@ if __name__ == "__main__":
     subdomain_information_keys = subdomain_network_information['keys']
 
     #physics_information_keys = physics_network_information['keys']
+    device_str=final_config["model"]["device"]
+    if device_str=="None":
+        device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    else:
+        device=torch.device(device_str)
+
+
+
     if_save_model = True
     print(f"----------------------保存模型权重:{if_save_model}-----------------------")
     if_save_result = True
@@ -674,7 +682,8 @@ if __name__ == "__main__":
     train_dataset = MultiHDF5Dataset_for_eigenvale_number(folder_path=train_data_dir,
                                                           file_prefix="data", global_data_keys=global_data_keys,
                                                           subdomain_data_keys=subdomain_data_keys,
-                                                          batch_size=batch_size, if_big_data=final_config["data"]["if_big_data"])
+                                                          batch_size=batch_size, if_big_data=final_config["data"]["if_big_data"],
+                                                          )
     test_dataset = MultiHDF5Dataset_for_eigenvale_number(folder_path=test_data_dir,
                                                          file_prefix="data", global_data_keys=global_data_keys,
                                                          subdomain_data_keys=subdomain_data_keys, batch_size=batch_size, if_big_data=final_config["data"]["if_big_data"])
@@ -865,7 +874,8 @@ if __name__ == "__main__":
                                      optim=optim, tho_generator=tho_generator, test_tho_generator=test_tho_generator,output_dim=output_dim,
                                      scheduler=scheduler, start_time=timestamp,
                                      prediction_model=final_config["model"]["prediction"],
-                                     test_epoch=test_epoch)
+                                     test_epoch=test_epoch,
+                                     device=device)
     test_model.train(epochs, if_save_model=if_save_model, model_pth_dir=save_model_pth)
     test_model.save_log(path=log_dir)
 
